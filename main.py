@@ -20,4 +20,3 @@ def run_phase1_test():
 
 if __name__ == "__main__":
     run_phase1_test()
- 
