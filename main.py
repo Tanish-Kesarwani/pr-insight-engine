@@ -12,13 +12,12 @@ def run_phase1_test():
     print("\nChanged Files Detected:\n")
 
     for d in diffs:
-        print("FILE:", d.file_path)
-        print("Added:", len(d.added_lines))
-        print("Deleted:", len(d.deleted_lines))
+        print(f"FILE: {d.file_path}")
+        print(f"Added lines: {len(d.added_lines)}")
+        print(f"Deleted lines: {len(d.deleted_lines)}")
         print("-" * 40)
 
 
 if __name__ == "__main__":
     run_phase1_test()
-
-print("diff test")
+ 
