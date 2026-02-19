@@ -18,3 +18,6 @@ class AnalyzerSummary:
     semgrep_findings: int
     bandit_findings: int
     findings: List[AnalyzerFinding]
+
+
+
