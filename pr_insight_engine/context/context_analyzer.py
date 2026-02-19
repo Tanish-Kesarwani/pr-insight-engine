@@ -15,18 +15,19 @@ class ContextAnalyzer:
         tags=[]
         weight=1.0
 
-        #--- sensitive modules ---
+        # --- priority-based classification ---
         if any(k in path_lower for k in self.SENSITIVE_KEYWORDS):
-            tags.append("senstive_module")
-            weight*=1.4
-        #--- core modules ---
-        if any(k in path_lower for k in self.CORE_KEYWORDS):
+            tags.append("sensitive_module")
+            weight *= 1.4
+
+        elif any(k in path_lower for k in self.CORE_KEYWORDS):
             tags.append("core_module")
-            weight*=1.2
-        #--- low risk modules ---
-        if any(k in path_lower for k in self.LOW_RISK_KEYWORDS):
+            weight *= 1.2
+
+        elif any(k in path_lower for k in self.LOW_RISK_KEYWORDS):
             tags.append("low_risk_area")
-            weight*=0.8
+            weight *= 0.8
+
 
         return FileContext(
             file_path=file_path,

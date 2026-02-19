@@ -3,6 +3,7 @@ from pr_insight_engine.analyzers.analyzer_service import AnalyzerService
 from pr_insight_engine.complexity.complexity_service import ComplexityService
 from pr_insight_engine.scoring.risk_engine import RiskEngine
 from pr_insight_engine.scoring.pr_risk_aggregator import PRRiskAggregator
+from pr_insight_engine.context.context_analyzer import ContextAnalyzer
 
 
 def run_pipeline_test():
@@ -11,6 +12,8 @@ def run_pipeline_test():
     # Step 1: detect changed files
     parser = GitDiffParser(".")
     diffs = parser.parse()
+    context_analyzer = ContextAnalyzer()
+
 
     if not diffs:
         print("No uncommitted changes detected.")
@@ -37,11 +40,17 @@ def run_pipeline_test():
         complexity_summary = complexity_service.analyze_file(d.file_path)
         print(f"  Avg complexity: {complexity_summary.average_complexity:.2f}")
         print(f"  Max complexity: {complexity_summary.max_complexity}")
+        
+
+        context = context_analyzer.analyze_file(d.file_path)
+        print(f"  Context tags: {context.tags}")
+        print(f"  Context weight: {context.weight}")
 
         # --- risk scoring ---
         risk = risk_engine.compute_file_risk(
             analyzer_summary,
             complexity_summary,
+            context.weight,
         )
 
         file_risks.append(risk)

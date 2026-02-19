@@ -10,6 +10,7 @@ class RiskEngine:
             self,
             analyzer_summary: AnalyzerSummary,
             complexity_summary: ComplexitySummary,
+            context_weight: float = 1.0,
     ) -> RiskScore:
         score = 0.0
 
@@ -37,6 +38,9 @@ class RiskEngine:
         elif max_complexity >=6:
             score+=4
 
+        # --- apply context weighting ---
+        score*=context_weight
+        
         # --- clamp score ---
         score=min(score, 100)
 
