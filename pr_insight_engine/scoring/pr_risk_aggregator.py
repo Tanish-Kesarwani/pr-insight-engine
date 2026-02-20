@@ -34,3 +34,4 @@ class PRRiskAggregator:
             numeric_score=round(pr_score,2),
             risk_level=level,
         )
+    

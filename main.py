@@ -5,6 +5,8 @@ from pr_insight_engine.scoring.risk_engine import RiskEngine
 from pr_insight_engine.scoring.pr_risk_aggregator import PRRiskAggregator
 from pr_insight_engine.context.context_analyzer import ContextAnalyzer
 from pr_insight_engine.explain.explanation_engine import ExplanationEngine
+from pr_insight_engine.scoring.merge_recommender import MergeRecommender
+
 
 
 def run_pipeline_test():
@@ -26,6 +28,8 @@ def run_pipeline_test():
     pr_aggregator = PRRiskAggregator()
     context_analyzer = ContextAnalyzer()
     explanation_engine = ExplanationEngine()
+    merge_recommender = MergeRecommender()
+
 
 
     file_risks = []
@@ -83,8 +87,19 @@ def run_pipeline_test():
     print(f"PR Risk level: {pr_risk.risk_level}")
     print("=" * 60)
 
+    # --- merge recommendation ---
+    recommendation = merge_recommender.recommend(pr_risk.risk_level)
+
+
+    print("\n=== Merge Recommendation ===")
+    print(f"Decision: {recommendation.decision}")
+    print(f"Message: {recommendation.message}")
+    print("=" * 60)
+
+
 
 if __name__ == "__main__":
     run_pipeline_test()
+
 
 
