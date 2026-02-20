@@ -4,6 +4,7 @@ from pr_insight_engine.complexity.complexity_service import ComplexityService
 from pr_insight_engine.scoring.risk_engine import RiskEngine
 from pr_insight_engine.scoring.pr_risk_aggregator import PRRiskAggregator
 from pr_insight_engine.context.context_analyzer import ContextAnalyzer
+from pr_insight_engine.explain.explanation_engine import ExplanationEngine
 
 
 def run_pipeline_test():
@@ -23,6 +24,9 @@ def run_pipeline_test():
     complexity_service = ComplexityService()
     risk_engine = RiskEngine()
     pr_aggregator = PRRiskAggregator()
+    context_analyzer = ContextAnalyzer()
+    explanation_engine = ExplanationEngine()
+
 
     file_risks = []
 
@@ -58,6 +62,17 @@ def run_pipeline_test():
         print(f"  Risk score: {risk.numeric_score}")
         print(f"  Risk level: {risk.risk_level}")
 
+        explanation = explanation_engine.generate_file_explanation(
+        analyzer_summary,
+        complexity_summary,
+        context,
+        )
+
+        print("  Explanation:")
+        for msg in explanation.messages:
+            print(f"    - {msg}")
+
+
         print("-" * 60)
 
     # --- PR level risk (AFTER loop) ---
@@ -72,4 +87,4 @@ def run_pipeline_test():
 if __name__ == "__main__":
     run_pipeline_test()
 
-#test 5
+

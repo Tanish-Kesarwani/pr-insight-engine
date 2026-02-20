@@ -13,7 +13,7 @@ class PRRiskAggregator:
             risk_level="LOW",
             )
         
-        #--- agregation strategy ---
+        #--- aggregation strategy ---
         max_score=max(r.numeric_score for r in file_risks)
         avg_score=sum(r.numeric_score for r in file_risks)/ len(file_risks)
 
