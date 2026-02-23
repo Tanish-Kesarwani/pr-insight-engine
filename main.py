@@ -6,22 +6,21 @@ from pr_insight_engine.scoring.pr_risk_aggregator import PRRiskAggregator
 from pr_insight_engine.context.context_analyzer import ContextAnalyzer
 from pr_insight_engine.explain.explanation_engine import ExplanationEngine
 from pr_insight_engine.scoring.merge_recommender import MergeRecommender
-
+from pr_insight_engine.context.test_mismatch_detector import TestMismatchDetector
 
 
 def run_pipeline_test():
-    print("\n=== PR Insight Engine - Phase 5 Test ===\n")
+    print("\n=== PR Insight Engine - Phase 11 Test ===\n")
 
     # Step 1: detect changed files
     parser = GitDiffParser(".")
     diffs = parser.parse()
-    context_analyzer = ContextAnalyzer()
-
 
     if not diffs:
         print("No uncommitted changes detected.")
         return
 
+    # --- initialize services ---
     analyzer = AnalyzerService()
     complexity_service = ComplexityService()
     risk_engine = RiskEngine()
@@ -29,10 +28,13 @@ def run_pipeline_test():
     context_analyzer = ContextAnalyzer()
     explanation_engine = ExplanationEngine()
     merge_recommender = MergeRecommender()
-
-
+    test_mismatch_detector = TestMismatchDetector()
 
     file_risks = []
+
+    # ✅ PR-level test mismatch detection
+    changed_paths = [d.file_path for d in diffs]
+    test_mismatch_result = test_mismatch_detector.analyze(changed_paths)
 
     # Step 2: analyze each changed file
     for d in diffs:
@@ -48,8 +50,8 @@ def run_pipeline_test():
         complexity_summary = complexity_service.analyze_file(d.file_path)
         print(f"  Avg complexity: {complexity_summary.average_complexity:.2f}")
         print(f"  Max complexity: {complexity_summary.max_complexity}")
-        
 
+        # --- context analysis ---
         context = context_analyzer.analyze_file(d.file_path)
         print(f"  Context tags: {context.tags}")
         print(f"  Context weight: {context.weight}")
@@ -66,20 +68,20 @@ def run_pipeline_test():
         print(f"  Risk score: {risk.numeric_score}")
         print(f"  Risk level: {risk.risk_level}")
 
+        # --- explanation ---
         explanation = explanation_engine.generate_file_explanation(
-        analyzer_summary,
-        complexity_summary,
-        context,
+            analyzer_summary,
+            complexity_summary,
+            context,
         )
 
         print("  Explanation:")
         for msg in explanation.messages:
             print(f"    - {msg}")
 
-
         print("-" * 60)
 
-    # --- PR level risk (AFTER loop) ---
+    # --- PR level risk ---
     pr_risk = pr_aggregator.compute_pr_risk(file_risks)
 
     print("\n=== PR Risk Summary ===")
@@ -87,9 +89,12 @@ def run_pipeline_test():
     print(f"PR Risk level: {pr_risk.risk_level}")
     print("=" * 60)
 
+    # ✅ test mismatch output
+    print("\n=== Test Coverage Signal ===")
+    print(f"Test mismatch detected: {test_mismatch_result.mismatch}")
+
     # --- merge recommendation ---
     recommendation = merge_recommender.recommend(pr_risk.risk_level)
-
 
     print("\n=== Merge Recommendation ===")
     print(f"Decision: {recommendation.decision}")
@@ -97,9 +102,5 @@ def run_pipeline_test():
     print("=" * 60)
 
 
-
 if __name__ == "__main__":
     run_pipeline_test()
-
-
-
