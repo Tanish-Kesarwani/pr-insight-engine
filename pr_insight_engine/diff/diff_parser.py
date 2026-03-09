@@ -22,9 +22,11 @@ class GitDiffParser:
     def _run_git_diff(self) -> str:
         result = subprocess.run(
             ["git", "diff"],
-            cwd=self.repo_path,
-            capture_output=True,
-            text=True
+            stdout = subprocess.PIPE,
+            stderr = subprocess.PIPE,
+            text = True,
+            encoding = "utf-8",
+            errors = "ignore",
         )
 
         if result.returncode != 0:
@@ -35,7 +37,7 @@ class GitDiffParser:
     def parse(self) -> List[FileDiff]:
         diff_text = self._run_git_diff()
 
-        if not diff_text.strip():
+        if not diff_text or not diff_text.strip():
             return []
 
         return self._parse(diff_text)
