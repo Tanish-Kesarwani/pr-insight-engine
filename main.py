@@ -9,7 +9,7 @@ from pr_insight_engine.scoring.merge_recommender import MergeRecommender
 from pr_insight_engine.context.test_mismatch_detector import TestMismatchDetector
 from pr_insight_engine.explain.heatmap_generator import HeatmapGenerator
 from pr_insight_engine.explain.risk_table_generator import RiskTableGenerator
-
+from pr_insight_engine.explain.report_generator import ReportGenerator
 
 def run_pipeline_test():
     print("\n=== PR Insight Engine - Phase 11 Test ===\n")
@@ -33,6 +33,7 @@ def run_pipeline_test():
     test_mismatch_detector = TestMismatchDetector()
     heatmap_generator = HeatmapGenerator()
     risk_table_generator = RiskTableGenerator()
+    report_generator = ReportGenerator()
 
     file_risks = []
 
@@ -106,6 +107,8 @@ def run_pipeline_test():
     print(f"Decision: {recommendation.decision}")
     print(f"Message: {recommendation.message}")
     print("=" * 60)
+
+    report_generator.generate(pr_risk, file_risks, test_mismatch_result.mismatch, recommendation)
 
 
 if __name__ == "__main__":
