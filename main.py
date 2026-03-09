@@ -7,6 +7,8 @@ from pr_insight_engine.context.context_analyzer import ContextAnalyzer
 from pr_insight_engine.explain.explanation_engine import ExplanationEngine
 from pr_insight_engine.scoring.merge_recommender import MergeRecommender
 from pr_insight_engine.context.test_mismatch_detector import TestMismatchDetector
+from pr_insight_engine.explain.heatmap_generator import HeatmapGenerator
+from pr_insight_engine.explain.risk_table_generator import RiskTableGenerator
 
 
 def run_pipeline_test():
@@ -29,6 +31,8 @@ def run_pipeline_test():
     explanation_engine = ExplanationEngine()
     merge_recommender = MergeRecommender()
     test_mismatch_detector = TestMismatchDetector()
+    heatmap_generator = HeatmapGenerator()
+    risk_table_generator = RiskTableGenerator()
 
     file_risks = []
 
@@ -88,6 +92,8 @@ def run_pipeline_test():
     print(f"PR Risk score: {pr_risk.numeric_score}")
     print(f"PR Risk level: {pr_risk.risk_level}")
     print("=" * 60)
+
+    risk_table_generator.generate(file_risks)
 
     # ✅ test mismatch output
     print("\n=== Test Coverage Signal ===")

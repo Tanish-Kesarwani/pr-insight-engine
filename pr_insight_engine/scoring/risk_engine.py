@@ -47,7 +47,7 @@ class RiskEngine:
         # --- map to risk level ---
         if score>= 50:
             level ="HIGH"
-        if score >= 20:
+        elif score >= 20:
             level ="MEDIUM"
         else:
             level="LOW"
