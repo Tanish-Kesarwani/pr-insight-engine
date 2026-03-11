@@ -1,7 +1,7 @@
 from typing import List
 from pr_insight_engine.analyzers.analyzer_models import AnalyzerSummary
 from pr_insight_engine.complexity.complexity_models import ComplexitySummary
-from pr_insight_engine.context.context_models import FileContext
+from pr_insight_engine.context.context_models import ContextResult
 from .explanation_models import RiskExplanation
 
 class ExplanationEngine:
@@ -13,7 +13,7 @@ class ExplanationEngine:
             self,
             analyzer_summary: AnalyzerSummary,
             complexity_summary: ComplexitySummary,
-            context: FileContext,
+            context: ContextResult,
     ) -> RiskExplanation:
         
         messages: List[str] = []
