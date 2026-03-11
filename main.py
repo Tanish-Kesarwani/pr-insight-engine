@@ -11,6 +11,7 @@ from pr_insight_engine.explain.heatmap_generator import HeatmapGenerator
 from pr_insight_engine.explain.risk_table_generator import RiskTableGenerator
 from pr_insight_engine.explain.report_generator import ReportGenerator
 from pr_insight_engine.analyzers.analyzer_registry import AnalyzerRegistry
+from pr_insight_engine.utils.language_detector import LanguageDetector
 
 def run_pipeline_test():
     print("\n=== PR Insight Engine - Phase 11 Test ===\n")
@@ -18,6 +19,14 @@ def run_pipeline_test():
     # Step 1: detect changed files
     parser = GitDiffParser(".")
     diffs = parser.parse()
+
+    # --- repository language detection ---
+    language_detector = LanguageDetector()
+    languages = language_detector.detect_languages(".")
+
+    print("\nDetected repository languages:")
+    for lang in languages:
+        print(f" - {lang}")
 
     if not diffs:
         print("No uncommitted changes detected.")
