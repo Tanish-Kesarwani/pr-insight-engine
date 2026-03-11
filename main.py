@@ -10,6 +10,7 @@ from pr_insight_engine.context.test_mismatch_detector import TestMismatchDetecto
 from pr_insight_engine.explain.heatmap_generator import HeatmapGenerator
 from pr_insight_engine.explain.risk_table_generator import RiskTableGenerator
 from pr_insight_engine.explain.report_generator import ReportGenerator
+from pr_insight_engine.analyzers.analyzer_registry import AnalyzerRegistry
 
 def run_pipeline_test():
     print("\n=== PR Insight Engine - Phase 11 Test ===\n")
@@ -23,7 +24,7 @@ def run_pipeline_test():
         return
 
     # --- initialize services ---
-    analyzer = AnalyzerService()
+    analyzer_registry = AnalyzerRegistry()
     complexity_service = ComplexityService()
     risk_engine = RiskEngine()
     pr_aggregator = PRRiskAggregator()
@@ -46,7 +47,13 @@ def run_pipeline_test():
         print(f"\nAnalyzing file: {d.file_path}")
 
         # --- static analysis ---
-        analyzer_summary = analyzer.analyze_file(d.file_path)
+        analyzer = analyzer_registry.get_analyzer(d.file_path)
+
+        if analyzer:
+            analyzer_summary = analyzer.analyze(d.file_path)
+        else:
+            print(" No analyzer available for this file type.")
+            continue
         print(f"  Total findings: {analyzer_summary.total_findings}")
         print(f"  Semgrep findings: {analyzer_summary.semgrep_findings}")
         print(f"  Bandit findings: {analyzer_summary.bandit_findings}")
