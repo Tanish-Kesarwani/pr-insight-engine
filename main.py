@@ -129,3 +129,10 @@ def run_pipeline_test():
 
 if __name__ == "__main__":
     run_pipeline_test()
+
+def risky_function(x):
+    if x > 0:
+        if x > 10:
+            if x > 20:
+                if x > 30:
+                    return x
