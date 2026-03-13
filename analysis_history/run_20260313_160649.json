@@ -1,0 +1,13 @@
+{
+    "pr_risk_score": 0.0,
+    "pr_risk_level": "LOW",
+    "decision": "SAFE_TO_MERGE",
+    "message": "PR appears low risk. Safe to merge with standard review.",
+    "files": [
+        {
+            "file": "pr_insight_engine/api/app.py",
+            "score": 0.0,
+            "level": "LOW"
+        }
+    ]
+}

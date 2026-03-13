@@ -8,12 +8,13 @@ from pr_insight_engine.scoring.risk_engine import RiskEngine
 from pr_insight_engine.scoring.pr_risk_aggregator import PRRiskAggregator
 from pr_insight_engine.context.context_analyzer import ContextAnalyzer
 from pr_insight_engine.scoring.merge_recommender import MergeRecommender
+from pr_insight_engine.utils.history_manager import HistoryManager
 
 app = FastAPI(title="PR Insight Engine Dashboard")
 
 
 # ----------------------------------
-# Core analysis function
+# Core PR Analysis Pipeline
 # ----------------------------------
 def run_pr_analysis(repo_path="."):
 
@@ -48,9 +49,10 @@ def run_pr_analysis(repo_path="."):
 
         file_risks.append(risk)
 
+    # If no files analyzed
     if not file_risks:
 
-        return {
+        result = {
             "pr_risk_score": 0,
             "pr_risk_level": "LOW",
             "decision": "SAFE_TO_MERGE",
@@ -58,10 +60,16 @@ def run_pr_analysis(repo_path="."):
             "files": []
         }
 
+        history = HistoryManager()
+        history.save_run(result)
+
+        return result
+
+    # Aggregate PR risk
     pr_risk = pr_aggregator.compute_pr_risk(file_risks)
     recommendation = merge_recommender.recommend(pr_risk.risk_level)
 
-    return {
+    result = {
         "pr_risk_score": pr_risk.numeric_score,
         "pr_risk_level": pr_risk.risk_level,
         "decision": recommendation.decision,
@@ -76,9 +84,15 @@ def run_pr_analysis(repo_path="."):
         ],
     }
 
+    # Save run history
+    history = HistoryManager()
+    history.save_run(result)
+
+    return result
+
 
 # ----------------------------------
-# Dashboard HTML
+# Dashboard UI
 # ----------------------------------
 @app.get("/", response_class=HTMLResponse)
 def dashboard():
@@ -110,7 +124,7 @@ def dashboard():
             table {
                 border-collapse: collapse;
                 margin-top: 20px;
-                width: 600px;
+                width: 700px;
             }
 
             th, td {
@@ -204,7 +218,7 @@ def dashboard():
 
 
 # ----------------------------------
-# API endpoint for dashboard
+# API endpoint used by dashboard
 # ----------------------------------
 @app.get("/dashboard_data")
 def dashboard_data():
